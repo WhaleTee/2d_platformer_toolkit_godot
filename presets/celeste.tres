@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PlayerMovementPreset" load_steps=2 format=3 uid="uid://de6rebs5d6ekt"]
+
+[ext_resource type="Script" path="res://scripts/player/player_movement_preset.gd" id="1_n1qjy"]
+
+[resource]
+script = ExtResource("1_n1qjy")
+use_acceleration = true
+ground_acceleration = 10.0
+ground_deceleration = 10.0
+ground_friction = 0.04
+ground_speed = 100.0
+ground_turn_speed = 20.0
+air_acceleration = 20.0
+air_deceleration = 20.0
+air_turn_speed = 20.0

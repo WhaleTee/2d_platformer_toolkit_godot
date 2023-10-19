@@ -10,11 +10,11 @@ func _ready():
 	# Subscribe to the states transitioned signal.
 	for child in get_children():
 		if child is State:
-			child.transitioned.connect(on_transition)
+			child.transition_to.connect(on_transition_to)
 
 	current_state.enter()
 
-func _unhandled_input(event: InputEvent):
+func _input(event: InputEvent):
 	current_state.handle_input(event)
 
 func _process(delta: float):
@@ -26,8 +26,8 @@ func _physics_process(delta: float) -> void:
 # This function calls the current state's exit() function, then changes the active state,
 # and calls its enter function.
 # It optionally takes a `msg` dictionary to pass to the next state's enter() function.
-func on_transition(target_state: State, msg: Dictionary = {}):
+func on_transition_to(target_state: State):
 	if target_state != null && target_state != current_state:
 		current_state.exit()
 		current_state = target_state
-		current_state.enter(msg)
+		current_state.enter({})

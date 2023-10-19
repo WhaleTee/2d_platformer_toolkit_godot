@@ -11,14 +11,21 @@ config_version=5
 [application]
 
 config/name="2D Platformer"
-run/main_scene="res://scenes/level_0.tscn"
+run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
-config/icon="res://icon.svg"
+run/max_fps=60
+boot_splash/image="res://letters-dark.png"
+config/icon="res://icon_monochrome_dark.png"
+boot_splash/minimum_display_time=2000
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=480
+window/size/viewport_height=270
+window/size/window_width_override=1920
+window/size/window_height_override=1080
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 
 [input]
 
@@ -43,3 +50,9 @@ move_right={
 [layer_names]
 
 2d_physics/layer_1="safe_ground"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

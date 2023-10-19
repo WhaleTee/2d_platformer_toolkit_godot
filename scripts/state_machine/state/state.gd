@@ -2,7 +2,7 @@
 class_name State extends Node
 
 # Emitted when transitioning to a new current_state.
-signal transitioned(state_name)
+signal transition_to(state: State)
 
 @export var player: PlayerMovement
 
