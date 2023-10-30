@@ -1,8 +1,6 @@
 class_name PlayerJump extends Node2D
 
-
 const default_gravity_scale: float = 1
-
 
 @export_category("Jump Settings")
 @export var jump_height: float = 140
@@ -17,10 +15,8 @@ const default_gravity_scale: float = 1
 @export_range(1, 10) var down_gravity_multiplier: float = 1
 @export_range(1, 10) var variable_jump_gravity_multiplier: float = 1
 
-
 @onready var player: CharacterBody2D = get_parent()
 @onready var default_gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-
 
 var on_ground: bool = false
 var desired_jump: bool = false

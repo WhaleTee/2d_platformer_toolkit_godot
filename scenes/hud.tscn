@@ -1,20 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://chng2lswcty8j"]
+[gd_scene load_steps=13 format=3 uid="uid://chng2lswcty8j"]
 
-[ext_resource type="Script" path="res://scripts/hud.gd" id="1_6el0o"]
-[ext_resource type="FontFile" uid="uid://doltn7tf4s5n8" path="res://font/DePixelBreit.ttf" id="2_keha2"]
+[ext_resource type="Script" path="res://scripts/hud/hud.gd" id="1_65c3c"]
+[ext_resource type="Theme" uid="uid://cye7b7oynkwr3" path="res://theme/hud_theme.tres" id="1_qqptt"]
+[ext_resource type="Script" path="res://scripts/hud/camera_tab.gd" id="2_2y12a"]
+[ext_resource type="Script" path="res://scripts/hud/running_tab.gd" id="2_iaw4p"]
+[ext_resource type="Script" path="res://scripts/hud/jumping_tab.gd" id="3_c6me8"]
+[ext_resource type="Script" path="res://scripts/slider_label.gd" id="5_4b7jq"]
+[ext_resource type="Script" path="res://scripts/slider/curve_grabber.gd" id="6_iwk08"]
+[ext_resource type="Script" path="res://scripts/slider/curve_slider.gd" id="6_kc6d5"]
+[ext_resource type="Script" path="res://scripts/slider/path2d_drawer.gd" id="8_adtbj"]
+[ext_resource type="Script" path="res://scripts/slider/path2d_range.gd" id="9_r1xbe"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_5bpcw"]
-line_spacing = 0.0
-font_size = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8sxul"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_5dnv0"]
-line_spacing = 0.0
-font_size = 10
+[sub_resource type="Curve2D" id="Curve2D_8qx83"]
+_data = {
+"points": PackedVector2Array(110.735, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 360)
+}
+point_count = 2
 
 [node name="HUD" type="Control"]
 texture_filter = 1
 texture_repeat = 1
-custom_minimum_size = Vector2(480, 270)
+custom_minimum_size = Vector2(960, 540)
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -27,11 +35,12 @@ offset_right = 240.0
 offset_bottom = 135.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_6el0o")
-up_position = Vector2(0, -270)
+theme = ExtResource("1_qqptt")
+script = ExtResource("1_65c3c")
+up_position = Vector2(0, -540)
 
 [node name="TabContainer" type="TabContainer" parent="."]
-clip_contents = true
+custom_minimum_size = Vector2(960, 540)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -46,159 +55,450 @@ grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
 
-[node name="Jumping" type="Button" parent="TabContainer"]
-layout_mode = 2
-
-[node name="Running" type="Button" parent="TabContainer"]
+[node name="Running" type="Control" parent="TabContainer"]
 visible = false
 layout_mode = 2
+script = ExtResource("2_iaw4p")
 
-[node name="Camera" type="Control" parent="TabContainer"]
-visible = false
-clip_contents = true
-layout_direction = 1
+[node name="Jumping" type="Control" parent="TabContainer"]
 layout_mode = 2
+script = ExtResource("3_c6me8")
 
-[node name="CameraLockButton" type="CheckBox" parent="TabContainer/Camera"]
+[node name="AirAccelerationSlider" type="HSlider" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 16.0
+offset_right = -10.0
+offset_bottom = 32.0
+grow_horizontal = 0
+focus_mode = 0
+max_value = 20.0
+step = 0.1
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/AirAccelerationSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -245.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Air Acceletation"
+
+[node name="AirDecelerationSlider" type="HSlider" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 40.0
+offset_right = -10.0
+offset_bottom = 56.0
+grow_horizontal = 0
+focus_mode = 0
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/AirDecelerationSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -245.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Air Deceleration"
+
+[node name="AirTurnSpeedSlider" type="HSlider" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 64.0
+offset_right = -10.0
+offset_bottom = 80.0
+grow_horizontal = 0
+focus_mode = 0
+max_value = 20.0
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/AirTurnSpeedSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -234.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Air Turn Speed"
+
+[node name="DoubleJumpCheckBox" type="CheckBox" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -27.0
+offset_top = 88.0
+offset_right = -3.0
+offset_bottom = 112.0
+grow_horizontal = 0
+focus_mode = 0
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/DoubleJumpCheckBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -122.0
+offset_top = -9.5
+offset_right = -12.0
+offset_bottom = 9.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Double Jump"
+
+[node name="VariableHeightCheckBox" type="CheckBox" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -27.0
+offset_top = 112.0
+offset_right = -3.0
+offset_bottom = 136.0
+grow_horizontal = 0
+focus_mode = 0
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/VariableHeightCheckBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -152.0
+offset_top = -9.5
+offset_right = -12.0
+offset_bottom = 9.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Variable Height	"
+
+[node name="JumpHeightSlider" type="VSlider" parent="TabContainer/Jumping"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -103.0
+offset_right = -64.0
+offset_bottom = 257.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_styles/slider = SubResource("StyleBoxEmpty_8sxul")
+max_value = 360.0
+value = 64.0
+rounded = true
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Jumping/JumpHeightSlider"]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 19.0
+text = "asdasdasd"
+script = ExtResource("5_4b7jq")
+offset = Vector2(-32, -32)
+grabber_shift = Vector2(0, 16)
+
+[node name="JumpSlider" type="Control" parent="TabContainer/Jumping" node_paths=PackedStringArray("grabber")]
+anchors_preset = 0
+offset_left = 200.0
+offset_top = 100.0
+offset_right = 240.0
+offset_bottom = 478.0
+script = ExtResource("6_kc6d5")
+grabber = NodePath("ColorRect")
+max_value = 150.0
+step = 20.0
+
+[node name="Node2D" type="Control" parent="TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("path")]
+anchors_preset = 0
+script = ExtResource("8_adtbj")
+path = NodePath("../Path2D")
+
+[node name="ColorRect" type="ColorRect" parent="TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("path")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -8.0
+offset_right = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+pivot_offset = Vector2(8, 8)
+script = ExtResource("6_iwk08")
+path = NodePath("../Path2D")
+
+[node name="Path2D" type="Path2D" parent="TabContainer/Jumping/JumpSlider"]
+position = Vector2(20, 0)
+curve = SubResource("Curve2D_8qx83")
+script = ExtResource("9_r1xbe")
+
+[node name="Camera" type="Control" parent="TabContainer" node_paths=PackedStringArray("_camera_lock_button", "_camera_zoom_slider", "_camera_damping_x_slider", "_camera_damping_y_slider", "_camera_lookahead_slider", "_camera_fixed_lookahed_button", "_camera_ignore_jumps_button", "_camera_panic_zone_button")]
+visible = false
+layout_mode = 2
+script = ExtResource("2_2y12a")
+_camera_lock_button = NodePath("LockCheckBox")
+_camera_zoom_slider = NodePath("ZoomSlider")
+_camera_damping_x_slider = NodePath("DampingXSlider")
+_camera_damping_y_slider = NodePath("DampingYSlider")
+_camera_lookahead_slider = NodePath("LookaheadSlider")
+_camera_fixed_lookahed_button = NodePath("FixedLookaheadCheckBox")
+_camera_ignore_jumps_button = NodePath("IgnoreJumpsCheckBox")
+_camera_panic_zone_button = NodePath("PanicZoneCheckBox")
+
+[node name="LockCheckBox" type="CheckBox" parent="TabContainer/Camera"]
 layout_mode = 1
 offset_left = 8.0
+offset_top = 16.0
 offset_right = 117.0
-offset_bottom = 24.0
+offset_bottom = 40.0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("2_keha2")
-theme_override_font_sizes/font_size = 10
+
+[node name="Label" type="Label" parent="TabContainer/Camera/LockCheckBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.5
+offset_top = -7.5
+offset_right = 82.5001
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 text = "Lock Camera"
 
-[node name="CameraZoomSlider" type="HSlider" parent="TabContainer/Camera"]
-layout_mode = 0
+[node name="ZoomSlider" type="HSlider" parent="TabContainer/Camera"]
+layout_mode = 1
 offset_left = 8.0
 offset_top = 48.0
-offset_right = 123.0
+offset_right = 208.0
 offset_bottom = 64.0
+focus_mode = 0
 min_value = 1.0
 max_value = 2.5
 step = 0.01
 value = 1.0
+scrollable = false
 
-[node name="Label" type="Label" parent="TabContainer/Camera/CameraZoomSlider"]
+[node name="Label" type="Label" parent="TabContainer/Camera/ZoomSlider"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -41.5
-offset_top = -8.0
-offset_right = 47.5
-offset_bottom = 3.0
+anchor_bottom = 0.5
+offset_left = 106.0
+offset_top = -9.5
+offset_right = 230.0
+offset_bottom = 9.5
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_keha2")
-theme_override_font_sizes/font_size = 10
+grow_vertical = 2
 text = "Camera Zoom"
-label_settings = SubResource("LabelSettings_5bpcw")
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="CameraDampingXSlider" type="HSlider" parent="TabContainer/Camera"]
+[node name="PanicZoneCheckBox" type="CheckBox" parent="TabContainer/Camera"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -123.0
-offset_top = 24.0
-offset_right = -7.99988
-offset_bottom = 40.0
-grow_horizontal = 0
-max_value = 1.0
-step = 0.001
+offset_left = 8.0
+offset_top = 80.0
+offset_right = 32.0
+offset_bottom = 104.0
+focus_mode = 0
 
-[node name="Label" type="Label" parent="TabContainer/Camera/CameraDampingXSlider"]
+[node name="Label" type="Label" parent="TabContainer/Camera/PanicZoneCheckBox"]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -41.5001
-offset_top = -8.0
-offset_right = 36.4999
-offset_bottom = 3.0
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = -7.5
+offset_right = 111.0
+offset_bottom = 11.5
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_keha2")
-text = "Damping (X)"
-label_settings = SubResource("LabelSettings_5dnv0")
-horizontal_alignment = 1
-vertical_alignment = 1
+grow_vertical = 2
+text = "Panic Zone"
 
-[node name="CameraDampingYSlider" type="HSlider" parent="TabContainer/Camera"]
+[node name="DampingXSlider" type="HSlider" parent="TabContainer/Camera"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -123.0
-offset_top = 48.0
-offset_right = -8.0
-offset_bottom = 64.0
-grow_horizontal = 0
-max_value = 0.5
-step = 0.01
-
-[node name="Label" type="Label" parent="TabContainer/Camera/CameraDampingYSlider"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -41.5
-offset_top = -8.0
-offset_right = 36.5
-offset_bottom = 3.0
-grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_keha2")
-text = "Damping (Y)"
-label_settings = SubResource("LabelSettings_5dnv0")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CameraLookaheadSlider" type="HSlider" parent="TabContainer/Camera"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -123.0
-offset_top = 72.0
-offset_right = -8.0
-offset_bottom = 88.0
-grow_horizontal = 0
-max_value = 2.0
-step = 0.01
-
-[node name="Label" type="Label" parent="TabContainer/Camera/CameraLookaheadSlider"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -41.5
-offset_top = -8.0
-offset_right = 24.5
-offset_bottom = 3.0
-grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_keha2")
-text = "Lookahead"
-label_settings = SubResource("LabelSettings_5dnv0")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CameraIgnoreJumpsButton" type="CheckBox" parent="TabContainer/Camera"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -133.0
-offset_top = 92.0
-offset_right = -2.0
-offset_bottom = 116.0
+offset_left = -210.0
+offset_top = 16.0
+offset_right = -9.99976
+offset_bottom = 32.0
 grow_horizontal = 0
 focus_mode = 0
-theme_override_fonts/font = ExtResource("2_keha2")
-theme_override_font_sizes/font_size = 10
-text = "Ignore jumps"
+max_value = 1.0
+step = 0.001
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Camera/DampingXSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -209.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Damping (X)"
+
+[node name="DampingYSlider" type="HSlider" parent="TabContainer/Camera"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 48.0
+offset_right = -10.0
+offset_bottom = 64.0
+grow_horizontal = 0
+focus_mode = 0
+max_value = 0.5
+step = 0.01
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Camera/DampingYSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -209.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Damping (Y)"
+
+[node name="LookaheadSlider" type="HSlider" parent="TabContainer/Camera"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 80.0
+offset_right = -10.0
+offset_bottom = 96.0
+grow_horizontal = 0
+focus_mode = 0
+max_value = 2.0
+step = 0.01
+scrollable = false
+
+[node name="Label" type="Label" parent="TabContainer/Camera/LookaheadSlider"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -193.0
+offset_top = -8.0
+offset_right = -100.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lookahead"
+
+[node name="IgnoreJumpsCheckBox" type="CheckBox" parent="TabContainer/Camera"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -27.0
+offset_top = 96.0
+offset_right = -3.0
+offset_bottom = 120.0
+grow_horizontal = 0
+focus_mode = 0
 icon_alignment = 1
+
+[node name="Label" type="Label" parent="TabContainer/Camera/IgnoreJumpsCheckBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -129.0
+offset_top = -7.5
+offset_right = -12.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ignore jumps"
+
+[node name="FixedLookaheadCheckBox" type="CheckBox" parent="TabContainer/Camera"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -27.0
+offset_top = 124.0
+offset_right = -3.0
+offset_bottom = 148.0
+grow_horizontal = 0
+focus_mode = 0
+
+[node name="Label" type="Label" parent="TabContainer/Camera/FixedLookaheadCheckBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -146.0
+offset_top = -7.5
+offset_right = -12.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Fixed Lookahed"
 
 [node name="Assist" type="Button" parent="TabContainer"]
 visible = false
@@ -228,5 +528,3 @@ offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
-
-[connection signal="pressed" from="HUDControlButton" to="." method="_on_hud_control_button_pressed"]

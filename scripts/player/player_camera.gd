@@ -5,11 +5,11 @@ signal need_smoothing(value: bool)
 @export var player: CharacterBody2D
 @export var settings_preset: PlayerCameraPreset
 
-@onready var init_zoom: Vector2 = zoom
-
+@onready var _init_zoom: Vector2 = zoom
 var _damping_x: float = 0
 var _damping_y: float = 0
 var _lookahead: float = 0
+var _fixed_lookahead: bool = false
 var _camera_locked: bool = false
 var _ignore_jumps: bool = false
 var _panic_zone_enabled: bool = false
@@ -44,16 +44,6 @@ func _follow_x(_delta: float, _speed: float = 1.0) -> void:
 		if _damping_x > 0:
 			desire_offset_x /= _damping_x / _delta
 		global_position.x += desire_offset_x * _speed
-
-
-# func _follow_x(_delta: float, _speed: float = 1.0) -> void:
-# 	if !_camera_locked:
-# 		var desire_offset_x: float = player.global_position.x - global_position.x
-# 		if _lookahead > 0:
-# 			desire_offset_x += player.velocity.x * _lookahead
-# 		if _damping_x > 0:
-# 			desire_offset_x /= _damping_x / _delta
-# 		global_position.x += desire_offset_x * _speed
 
 
 func _follow_y(_delta: float, _speed: float = 1.0) -> void:
@@ -94,8 +84,8 @@ func _apply_preset() -> void:
 	_panic_speed = settings_preset.panic_speed
 	
 
-func _on_camera_zoom_slider_value_changed(value: float) -> void:
-	zoom = Vector2.ONE * value * init_zoom
+func _on_camera_zoom_slider_value_changed(_value: float) -> void:
+	zoom = Vector2.ONE * _value * _init_zoom
 
 
 func _on_camera_lock_button_pressed() -> void:
@@ -114,14 +104,22 @@ func _on_camera_lookahead_slider_value_changed(_value: float) -> void:
 	_lookahead = _value
 
 
+func _on_camera_fixed_lookahead_button_pressed() -> void:
+	_fixed_lookahead = !_fixed_lookahead
+
+
 func _on_camera_ignore_jumps_button_pressed() -> void:
 	_ignore_jumps = !_ignore_jumps
 
 	
-func _on_preset_select_button_pressed(preset: PlayerCameraPreset) -> void:
-	settings_preset = preset
+func _on_preset_select_button_pressed(_preset: PlayerCameraPreset) -> void:
+	settings_preset = _preset
 	_apply_preset()
 
 
-func _on_camera_enable_panic_zone_button_pressed() -> void:
-	pass
+func _on_camera_panic_zone_button_pressed(_value: bool) -> void:
+	_panic_zone_enabled = _value
+
+
+func _on_camera_panic_zone_changed(_rect: Rect2i) -> void:
+	_panic_zone = _rect

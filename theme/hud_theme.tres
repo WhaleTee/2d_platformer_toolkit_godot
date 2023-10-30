@@ -1,0 +1,15 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cye7b7oynkwr3"]
+
+[ext_resource type="StyleBox" uid="uid://v37qisu0xyoq" path="res://theme/tab_contaoner_tab_style-box.tres" id="1_gwllp"]
+[ext_resource type="FontFile" uid="uid://doltn7tf4s5n8" path="res://font/DePixelBreit.ttf" id="1_hcgpp"]
+
+[resource]
+default_font = ExtResource("1_hcgpp")
+default_font_size = 9
+Label/font_sizes/font_size = 14
+TabContainer/constants/side_margin = 0
+TabContainer/font_sizes/font_size = 24
+TabContainer/styles/tab_disabled = ExtResource("1_gwllp")
+TabContainer/styles/tab_hovered = ExtResource("1_gwllp")
+TabContainer/styles/tab_selected = ExtResource("1_gwllp")
+TabContainer/styles/tab_unselected = ExtResource("1_gwllp")

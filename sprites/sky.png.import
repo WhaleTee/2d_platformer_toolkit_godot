@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1jaen23obhvp"
-path="res://.godot/imported/Gray.png-cfc5b7fa134f9d760dd07aae7baf4833.ctex"
+uid="uid://22nms3bagi6a"
+path="res://.godot/imported/sky.png-8fa0f55909e672d3ba612a05ac524628.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/pixel_frog/Background/Gray.png"
-dest_files=["res://.godot/imported/Gray.png-cfc5b7fa134f9d760dd07aae7baf4833.ctex"]
+source_file="res://sprites/sky.png"
+dest_files=["res://.godot/imported/sky.png-8fa0f55909e672d3ba612a05ac524628.ctex"]
 
 [params]
 
@@ -31,4 +31,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1
