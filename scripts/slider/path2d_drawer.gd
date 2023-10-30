@@ -2,7 +2,7 @@ class_name Path2DDrawer extends Control
 
 @export var path: Path2D
 @export var line_size: int = 1
-@export var color: Color = Color.YELLOW_GREEN
+@export var color: Color = Color.GREEN
 
 
 func _ready() -> void:

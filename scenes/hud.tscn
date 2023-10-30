@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://chng2lswcty8j"]
+[gd_scene load_steps=12 format=3 uid="uid://chng2lswcty8j"]
 
 [ext_resource type="Script" path="res://scripts/hud/hud.gd" id="1_65c3c"]
 [ext_resource type="Theme" uid="uid://cye7b7oynkwr3" path="res://theme/hud_theme.tres" id="1_qqptt"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" path="res://scripts/slider_label.gd" id="5_4b7jq"]
 [ext_resource type="Script" path="res://scripts/slider/curve_grabber.gd" id="6_iwk08"]
 [ext_resource type="Script" path="res://scripts/slider/curve_slider.gd" id="6_kc6d5"]
-[ext_resource type="Script" path="res://scripts/slider/path2d_drawer.gd" id="8_adtbj"]
 [ext_resource type="Script" path="res://scripts/slider/path2d_range.gd" id="9_r1xbe"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8sxul"]
@@ -244,11 +243,6 @@ script = ExtResource("6_kc6d5")
 grabber = NodePath("ColorRect")
 max_value = 150.0
 step = 20.0
-
-[node name="Node2D" type="Control" parent="TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("path")]
-anchors_preset = 0
-script = ExtResource("8_adtbj")
-path = NodePath("../Path2D")
 
 [node name="ColorRect" type="ColorRect" parent="TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("path")]
 layout_mode = 1

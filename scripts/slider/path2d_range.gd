@@ -51,18 +51,19 @@ var path_value: float:
         if path_value != val:
             path_value = val
             value = (path_value + min_value) * _value_multiplier
+            print(path_value, " ", value)
 
 
-func _get_value_with_step(val: float, min_val: float, max_val: float, step: float) -> float:
-    var result: float = val
+func _get_value_with_step(value: float, min_value: float, max_value: float, step: float) -> float:
+    var result: float = value
     if step > 0:
-        # 1. val - min_val subtracts the minimum value from the input value.
+        # 1. value - min_value subtracts the minimum value from the input value.
         # 2. The result is divided by step, which gives the number of steps between the minimum value and the input value.
         # 3. roundf() rounds this result to the nearest whole number.
         # 4. The result of the rounding is multiplied by step.
-        # 5. Finally, the result is added to min_value to get the nearest multiple of step to val.
-        result = roundf((val - min_val) / step) * step + min_val
-    if min_val <= max_val:
+        # 5. Finally, the result is added to min_value to get the nearest multiple of step to value.
+        result = roundf((value - min_value) / step) * step + min_value
+    if min_value <= max_value:
         result = clamp(result, min_value, max_value)
     else:
         result = clamp(result, max_value, min_value)

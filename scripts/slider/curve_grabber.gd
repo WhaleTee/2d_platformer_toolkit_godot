@@ -4,27 +4,26 @@ signal drag_started
 signal drag_ended(value: float)
 
 @export var path: Path2DRange
-@onready var curve: Curve2D = path.curve
+@onready var _curve: Curve2D = path.curve
 
 
 var _is_dragging: bool = false
 var _dragging_start_position: Vector2 = Vector2.ZERO
-# var _drag_delta: Vector2 = Vector2.ZERO
 var _mouse_inside: bool:
 	get: return get_global_rect().has_point(get_global_mouse_position())
 	set(val): pass
 
 
 func _ready() -> void:
-	path.path_value = curve.get_closest_offset(position)
-	position = _get_path_position()
+	path.path_value = _curve.get_closest_offset(position)
+	position = path.get_path_position() - pivot_offset
 
 
 func _process(delta: float) -> void:
 	if _is_dragging:
-		position = get_global_mouse_position() - _dragging_start_position
-		path.path_value = curve.get_closest_offset(position)
-		position = _get_path_position()
+		position = get_global_mouse_position() - _dragging_start_position + pivot_offset
+		path.path_value = _curve.get_closest_offset(position)
+		position = path.get_path_position() - pivot_offset
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -37,12 +36,4 @@ func _gui_input(event: InputEvent) -> void:
 		else:
 			_is_dragging = false
 			_dragging_start_position = Vector2.ZERO
-	# elif event is InputEventMouseMotion && _is_dragging:
-	# 	_drag_delta = get_global_mouse_position() - position - _dragging_start_position
-	# 	print(_drag_delta)
-	# else:
-	# 	_drag_delta = Vector2.ZERO
-
-
-func _get_path_position() -> Vector2:
-	return path.get_path_position() - pivot_offset
+			drag_ended.emit(path.value)
