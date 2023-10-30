@@ -1,4 +1,4 @@
-class_name SliderLabel extends Label
+class_name LabelTooltip extends Label
 
 @export var _grabber: CurveGrabber
 
