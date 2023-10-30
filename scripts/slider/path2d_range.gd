@@ -51,7 +51,6 @@ var path_value: float:
         if path_value != val:
             path_value = val
             value = (path_value + min_value) * _value_multiplier
-            print(path_value, " ", value)
 
 
 func _get_value_with_step(value: float, min_value: float, max_value: float, step: float) -> float:
