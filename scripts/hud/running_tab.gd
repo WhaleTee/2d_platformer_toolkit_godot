@@ -1,1 +1,1 @@
-class_name RunningTab extends HUDInputEventConnector
+class_name RunningTab extends Control

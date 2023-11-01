@@ -2,17 +2,16 @@ class_name JumpHeightCurve extends Control
 
 @export var _curve_color: Color = Color.GREEN
 @export var _line_size: float = 1
+@export var player_jump: PlayerJump
 
 @onready var physics_ticks_per_second: float = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 
-var jump_curve_points: PackedVector2Array = PackedVector2Array()
-var player_jump: PlayerJump:
-	get: return player_jump
-	set(val):
-		player_jump = val
-		if player_jump:
-			queue_redraw()
-			player_jump.settings_preset.value_changed.connect(_on_jump_preset_value_changed)
+var jump_curve_points: PackedVector2Array = []
+
+
+func _ready() -> void:
+	if player_jump:
+		player_jump.settings_preset.value_changed.connect(_on_jump_preset_value_changed)
 
 
 func _draw() -> void:

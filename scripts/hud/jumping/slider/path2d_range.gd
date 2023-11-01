@@ -34,22 +34,16 @@ var step: float = 1:
             else:
                 step = clamp(val, max_value, min_value)
 
-
-var _value_multiplier: float:
-    get: return (max_value - min_value) / curve.get_baked_length()
-    set(val): pass
-
-var _path_multiplier: float:
-    get: return curve.get_baked_length() / (max_value - min_value)
-    set(val): pass
-
 var path_value: float:
     get: return path_value
     set(val):
-        val = _get_value_with_step(val, 0, curve.get_baked_length(), step * _path_multiplier)
+        var baked_length: float = curve.get_baked_length()
+        # step is multiplied by value range to baked_length scaling
+        val = _get_value_with_step(val, 0, baked_length, step * (baked_length / (max_value - min_value)))
         if path_value != val:
             path_value = val
-            value = (path_value + min_value) * _value_multiplier
+            # value is calculated from path_value and multiplied by baked_length to value range scaling
+            value = (path_value + min_value) * ((max_value - min_value) / baked_length)
 
 
 func _get_value_with_step(value: float, min_value: float, max_value: float, step: float) -> float:
