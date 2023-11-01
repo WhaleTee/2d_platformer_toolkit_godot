@@ -1,6 +1,11 @@
 class_name PlayerMovement extends Node2D
 
-@export var settings_preset: PlayerMovementPreset
+@export var settings_preset: PlayerMovementPreset:
+	get: return settings_preset
+	set(val):
+		settings_preset = val
+		if settings_preset:
+			_apply_preset()
 @onready var player: CharacterBody2D = get_parent()
 
 var _speed: float = 100

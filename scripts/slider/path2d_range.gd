@@ -1,4 +1,3 @@
-@tool
 class_name Path2DRange extends Path2D
 
 signal value_changed(value: float)

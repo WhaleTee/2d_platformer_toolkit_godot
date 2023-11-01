@@ -3,9 +3,15 @@ class_name PlayerCamera extends Camera2D
 signal need_smoothing(value: bool)
 
 @export var player: CharacterBody2D
-@export var settings_preset: PlayerCameraPreset
+@export var settings_preset: PlayerCameraPreset:
+	get: return settings_preset
+	set(val):
+		settings_preset = val
+		if settings_preset:
+			_apply_preset()
 
 @onready var _init_zoom: Vector2 = zoom
+
 var _damping_x: float = 0
 var _damping_y: float = 0
 var _lookahead: float = 0
@@ -18,11 +24,10 @@ var _panic_speed: float
 
 
 func _ready() -> void:
-	top_level = true
 	if settings_preset:
 		_apply_preset()
 
-	
+
 func _physics_process(_delta: float) -> void:
 	_process_following_player(_delta)
 	_process_signals(_delta)
@@ -79,7 +84,7 @@ func _apply_preset() -> void:
 	_damping_y = settings_preset.damping_y
 	_lookahead = settings_preset.lookahead
 	_ignore_jumps = settings_preset.ignore_jumps
-	_panic_zone_enabled = settings_preset.panic_zone_enble
+	_panic_zone_enabled = settings_preset.panic_zone_enable
 	_panic_zone = settings_preset.panic_zone
 	_panic_speed = settings_preset.panic_speed
 	

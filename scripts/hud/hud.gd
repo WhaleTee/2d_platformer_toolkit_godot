@@ -3,16 +3,16 @@ class_name HUD extends HUDInputEventConnector
 @export var move_hud_duration: float = .5
 @export var up_position:= Vector2(0, -size.y)
 @export var down_position:= Vector2(0, 0)
+@export var hud_control_button: Button
 
-@onready var hud_control_button: Button = $HUDControlButton
 
 # Tabs Settings
 @export var player_movement: PlayerMovement
 @export var player_jump: PlayerJump
 @export var player_camera: PlayerCamera
+@export var jumping_tab: JumpingTab
 
 @onready var running_tab: RunningTab = $TabContainer/Running
-@onready var jumping_tab: JumpingTab = $TabContainer/Jumping
 @onready var camera_tab: CameraTab = $TabContainer/Camera
 
 
@@ -43,7 +43,8 @@ func connect_input_events() -> void:
 	#Running Tab
 
 	#Jumping Tab
-
+	jumping_tab.player_jump = player_jump
+	jumping_tab.connect_input_events()
 	#Cameta Tab
 	camera_tab.camera = player_camera
 	camera_tab.connect_input_events()

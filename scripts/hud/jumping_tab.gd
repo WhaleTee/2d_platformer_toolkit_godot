@@ -1,6 +1,7 @@
 class_name JumpingTab extends HUDInputEventConnector
 
 @export var air_acceleration_slider: HSlider
+@export var jump_height_curve: JumpHeightCurve
 
 var player_movement: PlayerMovement:
 	get: return player_movement
@@ -13,4 +14,4 @@ var player_jump: PlayerJump:
 
 
 func connect_input_events() -> void:
-	pass
+	jump_height_curve.player_jump = player_jump
