@@ -1,31 +1,30 @@
+@tool
 class_name CurveGrabber extends Control
 
 signal drag_started
 signal drag_ended(value: float)
 
-@export var path: Path2DRange
-@onready var _curve: Curve2D = path.curve
+@export var path: Path2DRange:
+	set(val):
+		if val && val != path:
+			path = val
+			_update_position_from_value(path.value)
+			path.value_changed.connect(_update_position_from_value)
 
+var is_dragging: bool = false
+var _dragging_start_position: Vector2 = Vector2.ZERO
 
 var mouse_inside: bool:
 	get: return get_global_rect().has_point(get_global_mouse_position())
-	set(val): pass
-
-var is_dragging: bool = false
-
-var _dragging_start_position: Vector2 = Vector2.ZERO
-
-
-func _ready() -> void:
-	path.path_value = _curve.get_closest_offset(position)
-	position = path.get_path_position() - pivot_offset
 
 
 func _process(delta: float) -> void:
 	if is_dragging:
 		position = get_global_mouse_position() - _dragging_start_position + pivot_offset
-		path.path_value = _curve.get_closest_offset(position)
+		path.pointer_offset = path.curve.get_closest_offset(position)
 		position = path.get_path_position() - pivot_offset
+	else:
+		_update_position_from_value(path.value)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -39,3 +38,7 @@ func _gui_input(event: InputEvent) -> void:
 			is_dragging = false
 			_dragging_start_position = Vector2.ZERO
 			drag_ended.emit(path.value)
+
+
+func _update_position_from_value(value: float) -> void:
+	position = path.get_path_position_from_value() - pivot_offset

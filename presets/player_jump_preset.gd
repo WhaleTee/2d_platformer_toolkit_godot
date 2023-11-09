@@ -1,62 +1,63 @@
-class_name PlayerJumpPreset extends Preset
+class_name PlayerJumpPreset extends Resource
 
-@export_range(0, 1) var air_friction: float:
-    get: return air_friction
+@export var air_friction: float:
     set(val):
-        if air_friction != val:
+        if val != air_friction:
             air_friction = val
-            value_changed.emit("air_friction")
+            changed.emit()
 @export var jump_height: float:
-    get: return jump_height
     set(val):
-        if jump_height != val:
+        if val != jump_height:
             jump_height = val
-            value_changed.emit("jump_height")
+            changed.emit()
 @export var jump_time_to_apex: float:
-    get: return jump_time_to_apex
     set(val):
-        if jump_time_to_apex != val:
+        if val != jump_time_to_apex:
             jump_time_to_apex = val
-            value_changed.emit("time_to_apex")
+            changed.emit()
 @export var jump_count: int:
-    get: return jump_count
     set(val):
-        if jump_count != val:
+        if val != jump_count:
             jump_count = val
-            value_changed.emit("jump_count")
+            changed.emit()
 @export var coyote_time: float:
-    get: return coyote_time
     set(val):
-        if coyote_time != val:
+        if val != coyote_time:
             coyote_time = val
-            value_changed.emit("coyote_time")
+            changed.emit()
 @export var jump_buffer: float:
-    get: return jump_buffer
     set(val):
-        if jump_buffer != val:
+        if val != jump_buffer:
             jump_buffer = val
-            value_changed.emit("jump_buffer")
+            changed.emit()
 @export var variable_jump: bool:
-    get: return variable_jump
     set(val):
-        if variable_jump != val:
+        if val != variable_jump:
             variable_jump = val
-            value_changed.emit("variable_jump")
+            changed.emit()
 @export var variable_jump_gravity_multiplier: float:
-    get: return variable_jump_gravity_multiplier
     set(val):
-        if variable_jump_gravity_multiplier != val:
+        if val != variable_jump_gravity_multiplier:
             variable_jump_gravity_multiplier = val
-            value_changed.emit("variable_jump_gravity_multiplier")
+            changed.emit()
 @export var up_gravity_multiplier: float:
-    get: return up_gravity_multiplier
     set(val):
-        if up_gravity_multiplier != val:
+        if val != up_gravity_multiplier:
             up_gravity_multiplier = val
-            value_changed.emit("up_gravity_multiplier")
+            changed.emit()
 @export var down_gravity_multiplier: float:
-    get: return down_gravity_multiplier
     set(val):
-        if down_gravity_multiplier != val:
+        if val != down_gravity_multiplier:
             down_gravity_multiplier = val
-            value_changed.emit("down_gravity_multiplier")
+            changed.emit()
+
+@export var air_acceleration: float:
+    set(val):
+        if val != air_acceleration:
+            air_acceleration = val
+            changed.emit()
+@export var air_deceleration: float:
+    set(val):
+        if val != air_deceleration:
+            air_deceleration = val
+            changed.emit()

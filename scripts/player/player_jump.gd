@@ -1,18 +1,13 @@
 class_name PlayerJump extends Node2D
 
+signal preset_applied()
+
 const _default_gravity_scale: float = 1
 
-@export var settings_preset: PlayerJumpPreset:
-	get: return settings_preset
-	set(val):
-		settings_preset = val
-		if settings_preset:
-			_apply_preset()
-			settings_preset.value_changed.connect(_on_settings_preset_value_changed)
+@export var settings_preset: PlayerJumpPreset
 
 @onready var _player: CharacterBody2D = get_parent()
 @onready var _default_gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-
 
 var jump_height: float = 140
 var time_to_apex: float = .5
@@ -20,11 +15,10 @@ var _jump_count: int = 1
 var _variable_jump: bool = false
 var _coyote_time: float = 0
 var _jump_buffer: float = .03
-var _air_friction: float = .005
+var _air_friction: float = 1
 var _up_gravity_multiplier: float = 1
 var _down_gravity_multiplier: float = 1
 var _variable_jump_gravity_multiplier: float = 1
-
 var _on_ground: bool = false
 var _desired_jump: bool = false
 var _pressing_jump: bool = false
@@ -36,26 +30,29 @@ var _jump_buffer_counter: float = 0
 var _gravity_multiplier: float = _default_gravity_scale
 
 var _jump_gravity: float:
-	get: return (4 * jump_height) / pow(time_to_apex, 2) # calculates as 4h/t² to reach specified height in pixels
-	set(_val): pass
+	get: return (2 * jump_height) / pow(time_to_apex, 2) # calculates as 2h/t² to reach specified height in pixels
+
 var _current_gravity: float:
-	get: return _jump_gravity if _player.velocity.y < 0 else _default_gravity
-	set(_val): pass
+	get: return _jump_gravity if _player.velocity.y < 0 else _fall_gravity
+
 var _jump_velocity: float:
 	get: return -2 * jump_height / time_to_apex # calculates as -2h/t
-	set(_val): pass
+
+var _fall_gravity: float:
+	get: return _jump_gravity
 
 
 func _ready() -> void:
 	if settings_preset:
 		_apply_preset()
+		settings_preset.changed.connect(_on_settings_preset_changed)
 
 
 func _physics_process(delta: float) -> void:
 	handle_physics(delta)
 	if _desired_jump:
 		handle_jump()
-	handle_friction()
+	# handle_friction()
 	_player.move_and_slide()
 
 
@@ -132,10 +129,11 @@ func handle_velocity(delta: float) -> void:
 
 func handle_friction() -> void:
 	if not _on_ground:
-		_player.velocity.y = lerp(_player.velocity.y, .0, _air_friction)
+		_player.velocity.y *= _air_friction
 
 
 func _apply_preset() -> void:
+	_air_friction = settings_preset.air_friction
 	jump_height = settings_preset.jump_height
 	time_to_apex = settings_preset.jump_time_to_apex
 	_jump_count = settings_preset.jump_count
@@ -145,7 +143,16 @@ func _apply_preset() -> void:
 	_variable_jump_gravity_multiplier = settings_preset.variable_jump_gravity_multiplier
 	_up_gravity_multiplier = settings_preset.up_gravity_multiplier
 	_down_gravity_multiplier = settings_preset.down_gravity_multiplier
+	preset_applied.emit()
 
 
-func _on_settings_preset_value_changed(setting: String) -> void:
+func _on_settings_preset_changed() -> void:
 	_apply_preset()
+
+
+func _on_jump_height_slider_value_changed(value: float) -> void:
+	jump_height = value
+
+
+func _on_jump_time_slider_value_changed(value: float) -> void:
+	time_to_apex = value

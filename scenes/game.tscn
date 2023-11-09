@@ -13,15 +13,13 @@
 [ext_resource type="Texture2D" uid="uid://blm650m4rjfwr" path="res://sprites/pixel_frog/Main Characters/Virtual Guy/Jump (32x32).png" id="6_w0q2a"]
 [ext_resource type="Script" path="res://scripts/hud/jumping/jump_height_chart.gd" id="7_4rjtm"]
 [ext_resource type="Texture2D" uid="uid://demmqigpvg7go" path="res://sprites/pixel_frog/Main Characters/Virtual Guy/Run (32x32).png" id="7_lfvx6"]
-[ext_resource type="Script" path="res://scripts/hud/jumping/slider/curve_slider.gd" id="7_vbqmn"]
-[ext_resource type="Script" path="res://scripts/hud/jumping/slider/curve_grabber.gd" id="8_8cpnh"]
+[ext_resource type="Script" path="res://scripts/hud/jumping/grid_box.gd" id="8_1xqn1"]
 [ext_resource type="Texture2D" uid="uid://i54n04b800db" path="res://sprites/pixel_frog/Main Characters/Virtual Guy/Wall Jump (32x32).png" id="8_51ypd"]
-[ext_resource type="Script" path="res://scripts/utils/chart/grid_box.gd" id="8_ybg2g"]
 [ext_resource type="Script" path="res://scripts/label_toolitp.gd" id="9_4brja"]
+[ext_resource type="Script" path="res://scripts/hud/jumping/slider/curve_grabber.gd" id="9_53efw"]
 [ext_resource type="Script" path="res://scripts/player/player_animator.gd" id="9_mxba0"]
 [ext_resource type="Script" path="res://scripts/hud/jumping/slider/path2d_range.gd" id="10_36bm5"]
 [ext_resource type="Script" path="res://scripts/state_machine/state_machine.gd" id="10_anlff"]
-[ext_resource type="Script" path="res://scripts/jump_height_curve.gd" id="11_f1u0d"]
 [ext_resource type="Script" path="res://scripts/state_machine/player/player_idle_state.gd" id="11_m6vc4"]
 [ext_resource type="Script" path="res://scripts/state_machine/player/player_walk_state.gd" id="12_vp861"]
 [ext_resource type="Script" path="res://scripts/hud/camera_tab.gd" id="13_ct8f1"]
@@ -38,21 +36,34 @@ shader = ExtResource("1_o5777")
 shader_parameter/speed_x = 0.015
 shader_parameter/speed_y = 0.0
 
-[sub_resource type="Resource" id="Resource_f5eny"]
-script = ExtResource("8_ybg2g")
-box = Rect2i(0, 0, 360, 360)
+[sub_resource type="Resource" id="Resource_5c51s"]
+script = ExtResource("8_1xqn1")
+box = Rect2i(0, 0, 320, 320)
 x_max = 5.0
 y_max = 10.0
-x_step = 1.0
+x_step = 0.625
 y_step = 1.0
 tick_size = 10.0
 line_color = Color(1, 1, 1, 1)
 line_size = 2.0
 text_color = Color(1, 1, 1, 1)
+line_offset = 1.0
 
-[sub_resource type="Curve2D" id="Curve2D_d71ao"]
+[sub_resource type="Curve2D" id="Curve2D_vh42v"]
 _data = {
-"points": PackedVector2Array(110.735, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 360)
+"points": PackedVector2Array(0, 0, 0, 0, 0, -32, 0, 0, 0, 0, 0, -320)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_06ew2"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 0)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_w3mc4"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 34, 0, 0, 0, 0, 0, 160, 0)
 }
 point_count = 2
 
@@ -680,9 +691,9 @@ air_turn_speed = 128.0
 
 [sub_resource type="Resource" id="Resource_0fr21"]
 script = ExtResource("28_1hb5t")
-air_friction = 0.0
-jump_height = 172.41
-jump_time_to_apex = 0.72
+air_friction = 0.9
+jump_height = 64.0
+jump_time_to_apex = 2.5
 jump_count = 1
 coyote_time = 0.0
 jump_buffer = 0.0
@@ -690,6 +701,8 @@ variable_jump = false
 variable_jump_gravity_multiplier = 0.0
 up_gravity_multiplier = 1.0
 down_gravity_multiplier = 1.0
+air_acceleration = 0.0
+air_deceleration = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jsltu"]
 texture = ExtResource("16_7wq30")
@@ -1370,7 +1383,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Variable Height	"
 
-[node name="JumpHeightChart" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping"]
+[node name="JumpHeightChart" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping" node_paths=PackedStringArray("_player_jump")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -1381,63 +1394,99 @@ offset_right = 48.0
 offset_bottom = -64.0
 grow_vertical = 0
 script = ExtResource("7_4rjtm")
-_grid_box = SubResource("Resource_f5eny")
+_player_jump = NodePath("../../../../../Playerlayer/Player/PlayerJump")
+_grid_box = SubResource("Resource_5c51s")
 
-[node name="JumpSlider" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping" node_paths=PackedStringArray("grabber")]
+[node name="JumpHeight" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 48.0
-offset_top = -424.0
-offset_right = 48.0
-offset_bottom = -64.0
 grow_vertical = 0
-script = ExtResource("7_vbqmn")
-grabber = NodePath("ColorRect")
-min_value = 64.0
-max_value = 360.0
 
-[node name="ColorRect" type="ColorRect" parent="HUDLayer/HUD/TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("path")]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
+[node name="Grabber" type="ColorRect" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpHeight" node_paths=PackedStringArray("path")]
+layout_mode = 0
 offset_left = -8.0
-offset_top = -8.0
+offset_top = -40.0
 offset_right = 8.0
-offset_bottom = 8.0
-grow_horizontal = 2
+offset_bottom = -24.0
 pivot_offset = Vector2(8, 8)
-script = ExtResource("8_8cpnh")
-path = NodePath("../Path2D")
+script = ExtResource("9_53efw")
+path = NodePath("../Path2DRange")
 
-[node name="SliderLabel" type="Label" parent="HUDLayer/HUD/TabContainer/Jumping/JumpSlider/ColorRect" node_paths=PackedStringArray("_grabber")]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 12.0
-offset_top = -16.0
-offset_right = 122.0
-offset_bottom = 3.0
-grow_horizontal = 2
+[node name="Label" type="Label" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpHeight/Grabber"]
+layout_mode = 0
+offset_right = 110.0
+offset_bottom = 19.0
 text = "Jump Height"
 script = ExtResource("9_4brja")
-_grabber = NodePath("..")
 
-[node name="Path2D" type="Path2D" parent="HUDLayer/HUD/TabContainer/Jumping/JumpSlider"]
-curve = SubResource("Curve2D_d71ao")
+[node name="Path2DRange" type="Path2D" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpHeight"]
+curve = SubResource("Curve2D_vh42v")
 script = ExtResource("10_36bm5")
+value = 32.0
+min_value = 32.0
+max_value = 320.0
+step = 1.0
 
-[node name="JumpHeightCurve" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping/JumpSlider" node_paths=PackedStringArray("player_jump")]
+[node name="JumpTimeToApex" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 grow_vertical = 0
-script = ExtResource("11_f1u0d")
-player_jump = NodePath("../../../../../../Playerlayer/Player/PlayerJump")
+
+[node name="Grabber" type="ColorRect" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex" node_paths=PackedStringArray("path")]
+layout_mode = 0
+offset_left = 26.0
+offset_top = -8.0
+offset_right = 42.0
+offset_bottom = 8.0
+pivot_offset = Vector2(8, 8)
+script = ExtResource("9_53efw")
+path = NodePath("../Path2DRange")
+
+[node name="Label" type="Label" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex/Grabber"]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 19.0
+text = "Jump Time"
+script = ExtResource("9_4brja")
+
+[node name="JumpTimeToFloor" type="Control" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex/Grabber"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_right = 8.0
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex/Grabber/JumpTimeToFloor" node_paths=PackedStringArray("path")]
+layout_mode = 0
+offset_left = 152.0
+offset_top = -8.0
+offset_right = 168.0
+offset_bottom = 8.0
+pivot_offset = Vector2(8, 8)
+script = ExtResource("9_53efw")
+path = NodePath("../Path2DRange")
+
+[node name="Path2DRange" type="Path2D" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex/Grabber/JumpTimeToFloor"]
+curve = SubResource("Curve2D_06ew2")
+script = ExtResource("10_36bm5")
+value = 2.5
+min_value = 0.5
+max_value = 2.5
+step = 0.01
+
+[node name="Path2DRange" type="Path2D" parent="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex"]
+curve = SubResource("Curve2D_w3mc4")
+script = ExtResource("10_36bm5")
+value = 0.5
+min_value = 0.5
+max_value = 2.5
+step = 0.01
 
 [node name="Camera" type="Control" parent="HUDLayer/HUD/TabContainer"]
 visible = false
@@ -1780,6 +1829,8 @@ script = ExtResource("18_80blo")
 player = NodePath("../Playerlayer/Player")
 settings_preset = SubResource("Resource_6vfpg")
 
+[connection signal="value_changed" from="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpHeight/Path2DRange" to="Playerlayer/Player/PlayerJump" method="_on_jump_height_slider_value_changed"]
+[connection signal="value_changed" from="HUDLayer/HUD/TabContainer/Jumping/JumpHeightChart/JumpTimeToApex/Path2DRange" to="Playerlayer/Player/PlayerJump" method="_on_jump_time_slider_value_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/TabContainer/Camera/LockCamera" to="PlayerCamera" method="_on_lock_camera_pressed"]
 [connection signal="value_changed" from="HUDLayer/HUD/TabContainer/Camera/Zoom" to="PlayerCamera" method="_on_zoom_value_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/TabContainer/Camera/EnablePanicZone" to="PlayerCamera" method="_on_enable_panic_zone_pressed"]

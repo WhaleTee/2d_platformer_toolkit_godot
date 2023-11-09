@@ -1,6 +1,6 @@
 class_name LabelTooltip extends Label
 
-@export var _grabber: CurveGrabber
+@onready var _grabber: CurveGrabber = get_parent()
 
 
 func _process(delta: float) -> void:
