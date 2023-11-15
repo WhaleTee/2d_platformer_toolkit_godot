@@ -1,19 +1,24 @@
 class_name JumpHeightChart extends Control
 
-@export var _player_jump: PlayerJump
+@export var _player_movement: PlayerMovement
 @export var _grid_box: GridBox
 @export var _curve_color: Color = Color.GREEN
-@export var _line_size: float = 1
-@export var _dot_size: float = 2
+@export var _curve_size: float = 1
 @export var _dot_color: Color = Color.BLACK
+@export var _dot_size: float = 2
 
 @onready var _physics_ticks_per_second: float = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 
+var _player_movement_settings: PlayerJumpPreset:
+	get: return _player_movement.jump_preset if _player_movement else null
 var _jump_curve_points: PackedVector2Array = []
 var _jump_height_position: float:
-	get: return _player_jump.jump_height
+	get: return _player_movement_settings.jump_height
 var _jump_time_position: float:
-	get: return _grid_box.box.size.x / _grid_box.x_max * _player_jump.time_to_apex
+	get: return _grid_box.box.size.x / _grid_box.x_max * _player_movement_settings.time_to_apex
+var _fall_time_position: float:
+	get: return _grid_box.box.size.x / _grid_box.x_max * _player_movement_settings.time_to_floor
+
 
 func _process(delta: float) -> void:
 	queue_redraw()
@@ -27,30 +32,46 @@ func _draw() -> void:
 		_draw_horizontal_grid(_grid_box)
 	
 	# draw curve
-	if _grid_box && _player_jump:
+	if _grid_box && _player_movement_settings:
 		_draw_curve()
 
 
 func _draw_curve() -> void:
-	var h: float = _jump_height_position
-	var t: float = _jump_time_position
-	var p0: Vector2 = Vector2(_grid_box.line_offset, 0)
-	var p1: Vector2 = Vector2(t - _grid_box.line_offset, -h * 2)
-	var p2: Vector2 = Vector2(t * 2 - _grid_box.line_offset, 0)
-
 	_jump_curve_points.clear()
+	_fill_time_to_apex_curve()
+	_fill_time_to_floor_curve()
+	# draw curve
+	draw_polyline(_jump_curve_points, _curve_color, _curve_size, true)
 
-	for i in _physics_ticks_per_second + 1:
+	# draw dots
+	draw_circle(_jump_curve_points[0], _dot_size, _dot_color)
+	# this dot hides transition between apex and floor curves at high point
+	draw_circle(_jump_curve_points[_physics_ticks_per_second / 2], _dot_size, _dot_color)
+
+
+func _fill_time_to_apex_curve() -> void:
+	var h: float = _jump_height_position
+	var jump_time: float = _jump_time_position
+	var p0: Vector2 = Vector2(_grid_box.line_offset, 0)
+	var p1: Vector2 = Vector2(jump_time - _grid_box.line_offset, -2 * h)
+	var p2: Vector2 = Vector2(2 * jump_time - _grid_box.line_offset, 0)
+
+	for i in _physics_ticks_per_second / 2 + 1:
 		var point = _quadratic_bezier(p0, p1, p2, i / _physics_ticks_per_second)
 		_jump_curve_points.append(point)
 	
-	# draw curve
-	draw_polyline(_jump_curve_points, _curve_color, _line_size, true)
 
-	# draw dots
-	draw_circle(p0, _dot_size, _dot_color)
-	draw_circle(p1 - Vector2(-_grid_box.line_offset, -h), _dot_size, _dot_color)
-	draw_circle(p2 - Vector2(_grid_box.line_offset, 0), _dot_size, _dot_color)
+func _fill_time_to_floor_curve() -> void:
+	var h: float = _jump_height_position
+	var jump_time: float = _jump_time_position
+	var fall_time: float = _fall_time_position
+	var p0: Vector2 = Vector2(jump_time - fall_time - _grid_box.line_offset, 0)
+	var p1: Vector2 = Vector2(jump_time - _grid_box.line_offset, -2 * h)
+	var p2: Vector2 = Vector2(jump_time + fall_time - _grid_box.line_offset, 0)
+
+	for i in range(_physics_ticks_per_second / 2 + 1, _physics_ticks_per_second + 1):
+		var point = _quadratic_bezier(p0, p1, p2, i / _physics_ticks_per_second)
+		_jump_curve_points.append(point)
 
 
 func _quadratic_bezier(p0: Vector2, p1: Vector2, p2: Vector2, t: float) -> Vector2:
@@ -85,7 +106,6 @@ func _draw_vertical_grid(grid_box: GridBox) -> void:
 			vertical_ticks.append(bottom)
 			vertical_ticks.append(bottom + Vector2(0, grid_box.tick_size))
 			
-			# Draw V Tick Labels
 			var label_text: String = _get_label(x, _is_decimal(step))
 			_draw_text_at_position(
 				label_text,
@@ -94,7 +114,6 @@ func _draw_vertical_grid(grid_box: GridBox) -> void:
 			)
 			x += step
 		
-		# Draw V Ticks
 		draw_multiline(vertical_ticks, grid_box.line_color, grid_box.line_size)
 
 
@@ -112,7 +131,6 @@ func _draw_horizontal_grid(grid_box: GridBox) -> void:
 			horizontal_ticks.append(left)
 			horizontal_ticks.append(left - Vector2(grid_box.tick_size, 0))
 			
-			# Draw H Tick Labels
 			var label_text: String = _get_label(y, _is_decimal(step))
 			_draw_text_at_position(
 				label_text,
@@ -121,7 +139,6 @@ func _draw_horizontal_grid(grid_box: GridBox) -> void:
 			)
 			y += step
 		
-		# Draw H Ticks
 		draw_multiline(horizontal_ticks, grid_box.line_color, grid_box.line_size)
 		
 
@@ -139,7 +156,7 @@ func _draw_text_at_position(text: String, text_color: Color, position: Vector2) 
 
 
 func _get_vertical_tick_label_position(base_position: Vector2, text: String, tick_size: float) -> Vector2:
-	# magic numbers in here just to make it look nice
+	# magic numbers here just to make it look nice
 	return base_position + Vector2(
 		-get_theme_default_font().get_string_size(text).x / 4,
 		get_theme_default_font_size() + tick_size
@@ -147,7 +164,7 @@ func _get_vertical_tick_label_position(base_position: Vector2, text: String, tic
 
 
 func _get_horizontal_tick_label_position(base_position: Vector2, text: String, tick_size: float) -> Vector2:
-	# magic numbers in here just to make it look nice
+	# magic numbers here just to make it look nice
 	return base_position - Vector2(
 		get_theme_default_font().get_string_size(text).x / 1.8 + tick_size,
 		-get_theme_default_font_size() * 0.35
