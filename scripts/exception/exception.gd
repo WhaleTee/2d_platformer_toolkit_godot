@@ -1,4 +1,4 @@
-class_name Exception
+class_name Exception extends Object
 
 var _clazz_name: String
 var _function_name: String
