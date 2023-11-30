@@ -7,4 +7,4 @@ class_name PlayerJumpPreset extends Resource
 @export var coyote_time: float
 @export var jump_buffer_time: float
 @export var variable_jump: bool
-@export var variable_jump_gravity_multiplier: float
+@export var jump_cutoff: float

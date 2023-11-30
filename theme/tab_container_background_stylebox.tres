@@ -1,0 +1,7 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://clbv128lbbyia"]
+
+[ext_resource type="Texture2D" uid="uid://kp0vy3ut3kb4" path="res://sprites/blueprint.png" id="1_a1mr3"]
+
+[resource]
+texture = ExtResource("1_a1mr3")
+modulate_color = Color(0.160784, 1, 0.533333, 0.12549)

@@ -15,7 +15,7 @@ run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 boot_splash/image="res://letters-dark.png"
 config/icon="res://icon_monochrome_dark.png"
-boot_splash/minimum_display_time=2000
+boot_splash/minimum_display_time=1000
 
 [debug]
 

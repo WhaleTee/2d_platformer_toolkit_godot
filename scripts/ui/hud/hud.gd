@@ -7,6 +7,7 @@ class_name HUD extends Control
 
 var _in_up: bool = true
 var _need_move_hud: bool = false
+var _moving: bool = false
 
 
 func _ready() -> void:
@@ -14,7 +15,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _need_move_hud:
+	if _need_move_hud && !_moving:
+		_moving = true
 		if _in_up:
 			create_tween().tween_property(self, "position", _down_position, _move_hud_duration).finished.connect(_on_moving_hud_finished)
 		else:
@@ -28,6 +30,7 @@ func _set_position_to_up() -> void:
 func _on_moving_hud_finished() -> void:
 	_in_up = !_in_up
 	_need_move_hud = false
+	_moving = false
 
 
 func _on_hud_control_button_pressed() -> void:

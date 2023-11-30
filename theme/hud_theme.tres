@@ -1,15 +1,49 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cye7b7oynkwr3"]
+[gd_resource type="Theme" load_steps=10 format=3 uid="uid://cye7b7oynkwr3"]
 
-[ext_resource type="StyleBox" uid="uid://v37qisu0xyoq" path="res://theme/tab_contaoner_tab_style-box.tres" id="1_gwllp"]
-[ext_resource type="FontFile" uid="uid://doltn7tf4s5n8" path="res://font/DePixelBreit.ttf" id="1_hcgpp"]
+[ext_resource type="Texture2D" uid="uid://2dl5p3qnv54g" path="res://sprites/annakris/checkbox_on_32.png" id="1_1ifkx"]
+[ext_resource type="StyleBox" uid="uid://clbv128lbbyia" path="res://theme/tab_container_background_stylebox.tres" id="1_38pye"]
+[ext_resource type="FontFile" uid="uid://doltn7tf4s5n8" path="res://fonts/DePixelBreit.ttf" id="1_hcgpp"]
+[ext_resource type="StyleBox" uid="uid://v37qisu0xyoq" path="res://theme/tab_container_tab_stylebox.tres" id="2_7o07t"]
+[ext_resource type="Texture2D" uid="uid://dlbh60ic564te" path="res://sprites/annakris/checkbox_off_32.png" id="2_l0rh3"]
+[ext_resource type="StyleBox" uid="uid://b5i7lla6mtswu" path="res://theme/slider.tres" id="3_4cste"]
+[ext_resource type="Texture2D" uid="uid://byw6lybo2ao0t" path="res://sprites/annakris/grabber_inactive_28.png" id="3_fxpi0"]
+[ext_resource type="StyleBox" uid="uid://dd1gr7ldpnsaa" path="res://theme/tab_container_panel_stylebox.tres" id="3_r5xpp"]
+[ext_resource type="Texture2D" uid="uid://cauxajvx1lgym" path="res://sprites/annakris/grabber_active_32.png" id="4_j7d56"]
 
 [resource]
 default_font = ExtResource("1_hcgpp")
 default_font_size = 9
+CheckBox/icons/checked = ExtResource("1_1ifkx")
+CheckBox/icons/checked_disabled = null
+CheckBox/icons/radio_checked = null
+CheckBox/icons/radio_checked_disabled = null
+CheckBox/icons/radio_unchecked = null
+CheckBox/icons/radio_unchecked_disabled = null
+CheckBox/icons/unchecked = ExtResource("2_l0rh3")
+CheckBox/icons/unchecked_disabled = null
+HSlider/icons/grabber = ExtResource("3_fxpi0")
+HSlider/icons/grabber_disabled = ExtResource("3_fxpi0")
+HSlider/icons/grabber_highlight = ExtResource("4_j7d56")
+HSlider/styles/grabber_area = ExtResource("3_4cste")
+HSlider/styles/grabber_area_highlight = ExtResource("3_4cste")
+HSlider/styles/slider = ExtResource("3_4cste")
 Label/font_sizes/font_size = 14
-TabContainer/constants/side_margin = 0
+TabContainer/colors/drop_mark_color = Color(1, 1, 1, 1)
+TabContainer/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+TabContainer/colors/font_hovered_color = Color(0.95, 0.95, 0.95, 1)
+TabContainer/colors/font_outline_color = Color(1, 1, 1, 1)
+TabContainer/colors/font_selected_color = Color(0.95, 0.95, 0.95, 1)
+TabContainer/colors/font_unselected_color = Color(0.7, 0.7, 0.7, 1)
 TabContainer/font_sizes/font_size = 24
-TabContainer/styles/tab_disabled = ExtResource("1_gwllp")
-TabContainer/styles/tab_hovered = ExtResource("1_gwllp")
-TabContainer/styles/tab_selected = ExtResource("1_gwllp")
-TabContainer/styles/tab_unselected = ExtResource("1_gwllp")
+TabContainer/styles/panel = ExtResource("1_38pye")
+TabContainer/styles/tab_disabled = ExtResource("2_7o07t")
+TabContainer/styles/tab_hovered = ExtResource("2_7o07t")
+TabContainer/styles/tab_selected = ExtResource("2_7o07t")
+TabContainer/styles/tab_unselected = ExtResource("2_7o07t")
+TabContainer/styles/tabbar_background = ExtResource("3_r5xpp")
+VSlider/icons/grabber = ExtResource("3_fxpi0")
+VSlider/icons/grabber_disabled = ExtResource("3_fxpi0")
+VSlider/icons/grabber_highlight = ExtResource("4_j7d56")
+VSlider/styles/grabber_area = ExtResource("3_4cste")
+VSlider/styles/grabber_area_highlight = ExtResource("3_4cste")
+VSlider/styles/slider = ExtResource("3_4cste")

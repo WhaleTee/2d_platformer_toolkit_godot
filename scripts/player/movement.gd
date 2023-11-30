@@ -11,6 +11,7 @@ var _desired_jump: bool = false
 var _pressing_jump: bool = false
 var _currently_jumping: bool = false
 var _can_jump_again: bool = false
+var _allow_double_jump: bool = false
 var _jump_counter: int = 0
 var _coyote_time_counter: float = 0
 var _jump_buffer_counter: float = 0
@@ -25,7 +26,7 @@ var _current_gravity: float:
 			&& !_on_ground
 			&& (!_pressing_jump || !_currently_jumping)
 		):
-			multiplier = jump_preset.variable_jump_gravity_multiplier
+			multiplier = jump_preset.jump_cutoff
 		return (_jump_gravity if velocity.y < 0 else _fall_gravity) * multiplier
 var _jump_init_velocity: float:
 	get: return -_jump_gravity * jump_preset.time_to_apex
@@ -51,7 +52,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _update_state(delta: float) -> void:
 	_on_ground = is_on_floor()
-	_desired_velocity_x = _input_vector_x * max(movement_preset.ground_speed, 0)
+	_desired_velocity_x = _input_vector_x * movement_preset.ground_speed
 	_update_jump_buffer(delta)
 	_update_coyote_time(delta)
 	_update_jump_state(delta)
@@ -73,7 +74,7 @@ func _update_coyote_time(delta: float) -> void:
 
 
 func _update_jump_state(delta: float) -> void:
-	if _on_ground && velocity.y != 0:
+	if _on_ground:
 		_jump_counter = 0
 		_currently_jumping = false
 
@@ -145,3 +146,28 @@ func _on_time_to_apex_value_changed(val: float) -> void:
 
 func _on_time_to_floor_value_changed(val: float) -> void:
 	jump_preset.time_to_floor = val
+
+
+func _on_double_jump_pressed() -> void:
+	_allow_double_jump = !_allow_double_jump
+	jump_preset.jump_count = 2 if _allow_double_jump else 1
+
+
+func _on_variable_height_check_box_pressed():
+	jump_preset.variable_jump = !jump_preset.variable_jump
+
+
+func _on_variable_height_cutoff_value_changed(val: float) -> void:
+	jump_preset.jump_cutoff = val
+
+
+func _on_air_acceleration_value_changed(val: float) -> void:
+	movement_preset.air_acceleration = val
+
+
+func _on_air_decceleration_value_changed(val: float) -> void:
+	movement_preset.air_decceleration = val
+
+
+func _on_air_turn_speed_value_changed(val: float) -> void:
+	movement_preset.air_turn_speed = val
